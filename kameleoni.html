@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kameleoni – Electric Foldable Terraces</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f5f0;
+    --accent: #c8f542;
+    --gray: #1e1e1e;
+    --muted: #6b6b6b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* LANGUAGE SWITCHER */
+  .lang-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 40px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--accent);
+  }
+
+  .lang-buttons {
+    display: flex;
+    gap: 6px;
+  }
+
+  .lang-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--muted);
+    padding: 6px 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  .lang-btn.active, .lang-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* NAV LINKS */
+  .nav-links {
+    display: flex;
+    gap: 30px;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 40px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,245,66,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-text { z-index: 1; }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 8vw, 110px);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-title span { color: var(--accent); }
+
+  .hero-desc {
+    font-size: 17px;
+    line-height: 1.7;
+    color: rgba(245,245,240,0.65);
+    max-width: 440px;
+    margin-bottom: 50px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--black);
+    padding: 16px 36px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.25s;
+  }
+
+  .btn-primary:hover {
+    background: #d9ff5a;
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--white);
+    padding: 16px 36px;
+    border: 1px solid rgba(255,255,255,0.25);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.25s;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--white);
+    transform: translateY(-2px);
+  }
+
+  /* HERO VISUAL */
+  .hero-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 580px;
+    opacity: 0;
+    animation: fadeIn 1.2s ease 1s forwards;
+  }
+
+  .terrace-mockup {
+    width: 100%;
+    max-width: 500px;
+    height: 380px;
+    position: relative;
+  }
+
+  .terrace-base {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: var(--gray);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .terrace-panel {
+    position: absolute;
+    bottom: 55px;
+    background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+    border: 1px solid rgba(200,245,66,0.2);
+    transform-origin: bottom center;
+    transition: transform 2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .panel-1 { width: 90%; left: 5%; height: 240px; }
+  .panel-2 { width: 70%; left: 15%; height: 190px; background: linear-gradient(135deg, #222, #333); z-index: 2; }
+  .panel-3 { width: 50%; left: 25%; height: 140px; background: linear-gradient(135deg, #2a2a2a, #3a3a3a); z-index: 3; }
+
+  .terrace-line {
+    position: absolute;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  .tl-1 { width: 60%; top: 100px; left: 20%; }
+  .tl-2 { width: 40%; top: 160px; left: 30%; }
+  .tl-3 { width: 20%; top: 220px; left: 40%; }
+
+  .fold-btn {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: var(--accent);
+    color: var(--black);
+    border: none;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+
+  .fold-btn:hover { background: #d9ff5a; }
+
+  /* STATS STRIP */
+  .stats-strip {
+    background: var(--gray);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-around;
+    padding: 40px;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* FEATURES */
+  .features {
+    padding: 120px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 1;
+    margin-bottom: 70px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .feature-card {
+    background: var(--gray);
+    padding: 50px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+
+  .feature-card:hover::after { width: 100%; }
+  .feature-card:hover { background: #252525; }
+
+  .feature-icon {
+    font-size: 32px;
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .feature-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+  }
+
+  .feature-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(245,245,240,0.55);
+  }
+
+  /* HOW IT WORKS */
+  .how-it-works {
+    background: var(--gray);
+    padding: 120px 40px;
+  }
+
+  .how-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 70px;
+  }
+
+  .step {
+    padding: 40px 30px;
+    background: rgba(255,255,255,0.03);
+    position: relative;
+  }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: rgba(200,245,66,0.15);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .step-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  /* CTA SECTION */
+  .cta-section {
+    padding: 140px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,245,66,0.06) 0%, transparent 70%);
+  }
+
+  .cta-section .section-title {
+    margin-bottom: 20px;
+  }
+
+  .cta-section p {
+    font-size: 18px;
+    color: rgba(245,245,240,0.55);
+    margin-bottom: 50px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* CONTACT */
+  .contact {
+    background: var(--gray);
+    padding: 100px 40px;
+  }
+
+  .contact-inner {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .contact-inner .section-title { margin-bottom: 50px; }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--white);
+    padding: 16px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    border-radius: 0;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: var(--accent);
+  }
+
+  .form-group textarea { height: 130px; resize: none; }
+
+  .form-group input::placeholder,
+  .form-group textarea::placeholder { color: var(--muted); }
+
+  /* FOOTER */
+  footer {
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--accent);
+  }
+
+  .footer-copy {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; }
+    .hero-visual { height: 300px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .lang-bar { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .stats-strip { padding: 30px 20px; }
+  }
+
+  @media (max-width: 560px) {
+    .steps { grid-template-columns: 1fr; }
+    .hero-title { font-size: 56px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="lang-bar">
+  <div class="logo">KAMELEONI</div>
+  <div class="nav-links">
+    <a href="#features" data-i18n="nav_features">Features</a>
+    <a href="#how" data-i18n="nav_how">How It Works</a>
+    <a href="#contact" data-i18n="nav_contact">Contact</a>
+  </div>
+  <div class="lang-buttons">
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('sq')">SQ</button>
+    <button class="lang-btn" onclick="setLang('de')">DE</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow" data-i18n="eyebrow">Electric · Automatic · Elegant</p>
+    <h1 class="hero-title" data-i18n="hero_title">Transform<br>Your <span>Space</span></h1>
+    <p class="hero-desc" data-i18n="hero_desc">Kameleoni designs electric automatic foldable terraces that adapt to your environment. Engineered for precision. Built to impress.</p>
+    <div class="hero-cta">
+      <a href="#contact" class="btn-primary" data-i18n="cta_primary">Get a Quote</a>
+      <a href="#features" class="btn-outline" data-i18n="cta_secondary">Learn More</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="terrace-mockup">
+      <div class="terrace-panel panel-1">
+        <div class="terrace-line tl-1"></div>
+        <div class="terrace-line tl-2"></div>
+        <div class="terrace-line tl-3"></div>
+      </div>
+      <div class="terrace-panel panel-2"></div>
+      <div class="terrace-panel panel-3"></div>
+      <div class="terrace-base"></div>
+    </div>
+    <button class="fold-btn" onclick="animateFold()" data-i18n="fold_btn">▶ Fold / Unfold</button>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat">
+    <div class="stat-num">5s</div>
+    <div class="stat-label" data-i18n="stat1">Fold Time</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">100%</div>
+    <div class="stat-label" data-i18n="stat2">Electric</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">IP65</div>
+    <div class="stat-label" data-i18n="stat3">Weather Rated</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">10Y</div>
+    <div class="stat-label" data-i18n="stat4">Warranty</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <p class="section-label" data-i18n="feat_label">Why Kameleoni</p>
+  <h2 class="section-title" data-i18n="feat_title">Built Different.</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">⚡</span>
+      <h3 class="feature-title" data-i18n="f1_title">Fully Electric</h3>
+      <p class="feature-desc" data-i18n="f1_desc">One-touch button or remote control operation. Silent motors with zero maintenance required.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔄</span>
+      <h3 class="feature-title" data-i18n="f2_title">Auto-Folding</h3>
+      <p class="feature-desc" data-i18n="f2_desc">Advanced folding mechanism with position memory. Deploys and retracts in under 5 seconds.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🌧️</span>
+      <h3 class="feature-title" data-i18n="f3_title">All-Weather</h3>
+      <p class="feature-desc" data-i18n="f3_desc">IP65 certified. Built to withstand wind, rain, and extreme temperatures year-round.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📐</span>
+      <h3 class="feature-title" data-i18n="f4_title">Custom Sizing</h3>
+      <p class="feature-desc" data-i18n="f4_desc">Every terrace is custom-engineered to fit your space perfectly. No compromises.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🎨</span>
+      <h3 class="feature-title" data-i18n="f5_title">Premium Design</h3>
+      <p class="feature-desc" data-i18n="f5_desc">Sleek aluminium profiles available in any RAL color. Designed to complement modern architecture.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📱</span>
+      <h3 class="feature-title" data-i18n="f6_title">Smart Control</h3>
+      <p class="feature-desc" data-i18n="f6_desc">Optional app connectivity. Schedule, control, and monitor your terrace from anywhere.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works" id="how">
+  <div class="how-inner">
+    <p class="section-label" data-i18n="how_label">The Process</p>
+    <h2 class="section-title" data-i18n="how_title">Simple as 1-2-3-4</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4 class="step-title" data-i18n="s1_title">Consultation</h4>
+        <p class="step-desc" data-i18n="s1_desc">We visit your property, take measurements, and discuss your vision.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4 class="step-title" data-i18n="s2_title">Custom Design</h4>
+        <p class="step-desc" data-i18n="s2_desc">Our engineers design a solution tailored exactly to your space and needs.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4 class="step-title" data-i18n="s3_title">Manufacturing</h4>
+        <p class="step-desc" data-i18n="s3_desc">Your terrace is precision-built in our workshop using high-grade materials.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h4 class="step-title" data-i18n="s4_title">Installation</h4>
+        <p class="step-desc" data-i18n="s4_desc">Our certified team installs everything in a single day. You just enjoy it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <p class="section-label" data-i18n="cta_label">Ready?</p>
+  <h2 class="section-title" data-i18n="cta_title">Your Dream Terrace<br><span style="color:var(--accent)">Awaits.</span></h2>
+  <p data-i18n="cta_desc">Join hundreds of satisfied clients who transformed their space with Kameleoni.</p>
+  <a href="#contact" class="btn-primary" data-i18n="cta_primary">Get a Free Quote</a>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <p class="section-label" data-i18n="contact_label">Get In Touch</p>
+    <h2 class="section-title" data-i18n="contact_title">Contact Us</h2>
+    <div class="form-group">
+      <input type="text" data-placeholder="name_placeholder" placeholder="Your Name">
+    </div>
+    <div class="form-group">
+      <input type="email" data-placeholder="email_placeholder" placeholder="Your Email">
+    </div>
+    <div class="form-group">
+      <input type="tel" data-placeholder="phone_placeholder" placeholder="Phone Number">
+    </div>
+    <div class="form-group">
+      <textarea data-placeholder="msg_placeholder" placeholder="Tell us about your space..."></textarea>
+    </div>
+    <br>
+    <button class="btn-primary" style="width:100%" data-i18n="submit_btn">Send Message</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">KAMELEONI</div>
+  <div class="footer-copy" data-i18n="footer_copy">© 2025 Kameleoni. All rights reserved.</div>
+</footer>
+
+<script>
+  // ─── TRANSLATIONS ───────────────────────────────────────────────
+  const translations = {
+    en: {
+      nav_features: "Features",
+      nav_how: "How It Works",
+      nav_contact: "Contact",
+      eyebrow: "Electric · Automatic · Elegant",
+      hero_title: "Transform<br>Your <span style='color:var(--accent)'>Space</span>",
+      hero_desc: "Kameleoni designs electric automatic foldable terraces that adapt to your environment. Engineered for precision. Built to impress.",
+      cta_primary: "Get a Free Quote",
+      cta_secondary: "Learn More",
+      fold_btn: "▶ Fold / Unfold",
+      stat1: "Fold Time",
+      stat2: "Electric",
+      stat3: "Weather Rated",
+      stat4: "Warranty",
+      feat_label: "Why Kameleoni",
+      feat_title: "Built Different.",
+      f1_title: "Fully Electric",
+      f1_desc: "One-touch button or remote control operation. Silent motors with zero maintenance required.",
+      f2_title: "Auto-Folding",
+      f2_desc: "Advanced folding mechanism with position memory. Deploys and retracts in under 5 seconds.",
+      f3_title: "All-Weather",
+      f3_desc: "IP65 certified. Built to withstand wind, rain, and extreme temperatures year-round.",
+      f4_title: "Custom Sizing",
+      f4_desc: "Every terrace is custom-engineered to fit your space perfectly. No compromises.",
+      f5_title: "Premium Design",
+      f5_desc: "Sleek aluminium profiles available in any RAL color. Designed to complement modern architecture.",
+      f6_title: "Smart Control",
+      f6_desc: "Optional app connectivity. Schedule, control, and monitor your terrace from anywhere.",
+      how_label: "The Process",
+      how_title: "Simple as 1-2-3-4",
+      s1_title: "Consultation",
+      s1_desc: "We visit your property, take measurements, and discuss your vision.",
+      s2_title: "Custom Design",
+      s2_desc: "Our engineers design a solution tailored exactly to your space and needs.",
+      s3_title: "Manufacturing",
+      s3_desc: "Your terrace is precision-built in our workshop using high-grade materials.",
+      s4_title: "Installation",
+      s4_desc: "Our certified team installs everything in a single day. You just enjoy it.",
+      cta_label: "Ready?",
+      cta_title: "Your Dream Terrace<br><span style='color:var(--accent)'>Awaits.</span>",
+      cta_desc: "Join hundreds of satisfied clients who transformed their space with Kameleoni.",
+      contact_label: "Get In Touch",
+      contact_title: "Contact Us",
+      name_placeholder: "Your Name",
+      email_placeholder: "Your Email",
+      phone_placeholder: "Phone Number",
+      msg_placeholder: "Tell us about your space...",
+      submit_btn: "Send Message",
+      footer_copy: "© 2025 Kameleoni. All rights reserved."
+    },
+    sq: {
+      nav_features: "Karakteristikat",
+      nav_how: "Si Funksionon",
+      nav_contact: "Kontakt",
+      eyebrow: "Elektrik · Automatik · Elegant",
+      hero_title: "Transformo<br><span style='color:var(--accent)'>Hapësirën</span> Tënde",
+      hero_desc: "Kameleoni prodhon terasa elektrike automatike të palosshme që përshtaten me mjedisin tuaj. Inxhinieri e lartë. Dizajn për të mbresëlënë.",
+      cta_primary: "Merr një Ofertë",
+      cta_secondary: "Mëso Më Shumë",
+      fold_btn: "▶ Palo / Hap",
+      stat1: "Kohë Palosje",
+      stat2: "Elektrik",
+      stat3: "Rezistente ndaj Motit",
+      stat4: "Garanci",
+      feat_label: "Pse Kameleoni",
+      feat_title: "Ndryshe nga të Tjerët.",
+      f1_title: "Plotësisht Elektrik",
+      f1_desc: "Kontroll me buton ose telekomandë. Motorë të heshtur pa mirëmbajtje.",
+      f2_title: "Palosje Automatike",
+      f2_desc: "Mekanizëm i avancuar me memorie pozicioni. Hapet dhe mbyllet brenda 5 sekondave.",
+      f3_title: "Për Çdo Mot",
+      f3_desc: "Certifikuar IP65. I ndërtuar për të qëndruar ndaj erës, shiut dhe temperaturave ekstreme.",
+      f4_title: "Madhësi Sipas Kërkesës",
+      f4_desc: "Çdo terrasë është projektuar sipas hapësirës tuaj. Pa kompromis.",
+      f5_title: "Dizajn Premium",
+      f5_desc: "Profil alumini i disponueshëm në çdo ngjyrë RAL. Për arkitekturë moderne.",
+      f6_title: "Kontroll Inteligjent",
+      f6_desc: "Lidhje opsionale me aplikacion. Kontrolloni terrasën tuaj nga kudo.",
+      how_label: "Procesi",
+      how_title: "Thjesht 1-2-3-4",
+      s1_title: "Konsultim",
+      s1_desc: "Vizitojmë pronën tuaj, marrim matjet dhe diskutojmë vizionin tuaj.",
+      s2_title: "Dizajn i Personalizuar",
+      s2_desc: "Inxhinierët tanë projektojnë zgjidhjen sipas nevojave tuaja.",
+      s3_title: "Prodhim",
+      s3_desc: "Terrassa prodhohet me precizion në punëtorinë tonë me materiale cilësore.",
+      s4_title: "Instalim",
+      s4_desc: "Ekipi ynë i certifikuar instalon gjithçka brenda një dite. Ju vetëm gëzoni.",
+      cta_label: "Gati?",
+      cta_title: "Terrasa e Ëndrrave<br><span style='color:var(--accent)'>Ju Pret.</span>",
+      cta_desc: "Bashkohuni me qindra klientë të kënaqur që transformuan hapësirën e tyre me Kameleoni.",
+      contact_label: "Na Kontaktoni",
+      contact_title: "Kontakto",
+      name_placeholder: "Emri Juaj",
+      email_placeholder: "Email-i Juaj",
+      phone_placeholder: "Numri i Telefonit",
+      msg_placeholder: "Na tregoni për hapësirën tuaj...",
+      submit_btn: "Dërgo Mesazhin",
+      footer_copy: "© 2025 Kameleoni. Të gjitha të drejtat e rezervuara."
+    },
+    de: {
+      nav_features: "Merkmale",
+      nav_how: "So Funktioniert's",
+      nav_contact: "Kontakt",
+      eyebrow: "Elektrisch · Automatisch · Elegant",
+      hero_title: "Verwandle<br>Deinen <span style='color:var(--accent)'>Raum</span>",
+      hero_desc: "Kameleoni entwickelt elektrische automatisch faltbare Terrassen, die sich Ihrer Umgebung anpassen. Präzisionsgefertigt. Designed to impress.",
+      cta_primary: "Angebot anfordern",
+      cta_secondary: "Mehr erfahren",
+      fold_btn: "▶ Falten / Öffnen",
+      stat1: "Faltzeit",
+      stat2: "Elektrisch",
+      stat3: "Wetterfest",
+      stat4: "Garantie",
+      feat_label: "Warum Kameleoni",
+      feat_title: "Anders gebaut.",
+      f1_title: "Vollständig Elektrisch",
+      f1_desc: "Ein-Knopf-Bedienung oder Fernbedienung. Geräuschlose Motoren, kein Wartungsaufwand.",
+      f2_title: "Automatisches Falten",
+      f2_desc: "Fortschrittlicher Klappmechanismus mit Positionsspeicher. Öffnet und schließt in unter 5 Sekunden.",
+      f3_title: "Wetterfest",
+      f3_desc: "IP65-zertifiziert. Beständig gegen Wind, Regen und extreme Temperaturen.",
+      f4_title: "Maßgefertigt",
+      f4_desc: "Jede Terrasse wird individuell für Ihren Raum konstruiert. Kein Kompromiss.",
+      f5_title: "Premium Design",
+      f5_desc: "Schlanke Aluminiumprofile in jeder RAL-Farbe. Für moderne Architektur.",
+      f6_title: "Intelligente Steuerung",
+      f6_desc: "Optionale App-Anbindung. Steuern Sie Ihre Terrasse von überall.",
+      how_label: "Der Prozess",
+      how_title: "Einfach 1-2-3-4",
+      s1_title: "Beratung",
+      s1_desc: "Wir besuchen Ihr Objekt, nehmen Maße und besprechen Ihre Wünsche.",
+      s2_title: "Individuelle Planung",
+      s2_desc: "Unsere Ingenieure entwickeln eine maßgeschneiderte Lösung für Ihren Raum.",
+      s3_title: "Fertigung",
+      s3_desc: "Ihre Terrasse wird präzise in unserer Werkstatt aus hochwertigen Materialien gefertigt.",
+      s4_title: "Montage",
+      s4_desc: "Unser zertifiziertes Team installiert alles an einem Tag. Sie genießen einfach.",
+      cta_label: "Bereit?",
+      cta_title: "Ihre Traumterrasse<br><span style='color:var(--accent)'>Wartet.</span>",
+      cta_desc: "Schließen Sie sich Hunderten zufriedener Kunden an, die ihren Raum mit Kameleoni verwandelt haben.",
+      contact_label: "Kontakt aufnehmen",
+      contact_title: "Kontaktieren Sie uns",
+      name_placeholder: "Ihr Name",
+      email_placeholder: "Ihre E-Mail",
+      phone_placeholder: "Telefonnummer",
+      msg_placeholder: "Erzählen Sie uns von Ihrem Raum...",
+      submit_btn: "Nachricht senden",
+      footer_copy: "© 2025 Kameleoni. Alle Rechte vorbehalten."
+    }
+  };
+
+  let currentLang = 'en';
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+
+    document.querySelectorAll('[data-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-placeholder');
+      if (t[key] !== undefined) el.placeholder = t[key];
+    });
+  }
+
+  // ─── FOLD ANIMATION ──────────────────────────────────────────────
+  let folded = false;
+  function animateFold() {
+    folded = !folded;
+    const panels = document.querySelectorAll('.terrace-panel');
+    if (folded) {
+      panels[0].style.transform = 'scaleY(0.05)';
+      panels[1].style.transform = 'scaleY(0.05)';
+      panels[2].style.transform = 'scaleY(0.05)';
+    } else {
+      panels[0].style.transform = 'scaleY(1)';
+      panels[1].style.transform = 'scaleY(1)';
+      panels[2].style.transform = 'scaleY(1)';
+    }
+  }
+
+  // ─── SCROLL REVEAL ───────────────────────────────────────────────
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.feature-card, .step, .stat').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
